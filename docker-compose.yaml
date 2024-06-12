@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  httpd:
+    image: nginx:latest 
+    volumes:
+      -
+    ports:
+      - "69420:80"
+    networks:
+      - Annuaire.net
+
+  web:
+    image: canals/php:latest
+    ports:
+      - "69423:80"
+    volumes :
+      - ./WebDirectoy.core/app:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - Annuaire.net
+    depends_on:
+      - sql
+
+  sql:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "69421:3307"
+    networks:
+      - Annuaire.net
+
+  adminer:
+    image: adminer
+    ports:
+      - "69422:8080"
+    networks:
+      - Annuraire.net
+networks:
+  Annuaire.net:
+    driver: bridge
