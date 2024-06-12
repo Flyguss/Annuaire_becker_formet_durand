@@ -13,8 +13,9 @@ services:
     ports:
       - "42063:80"
     volumes:
-      - ./WebDirectoy.core/app:/var/www/html
-    working_dir: /var/www/html
+      - ./WebDirectory/public:/var/www/html
+        -./WebDirectory/app:/var/www/src
+    working_dir: /var/www/src
     networks:
       - Annuaire.net
     depends_on:
