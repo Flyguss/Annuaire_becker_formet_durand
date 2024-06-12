@@ -6,14 +6,14 @@ services:
     volumes:
       -
     ports:
-      - "69420:80"
+      - "42060:80"
     networks:
       - Annuaire.net
 
   web:
     image: canals/php:latest
     ports:
-      - "69423:80"
+      - "42063:80"
     volumes :
       - ./WebDirectoy.core/app:/var/www/html
     working_dir: /var/www/html
@@ -30,14 +30,14 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "69421:3307"
+      - "42061:3307"
     networks:
       - Annuaire.net
 
   adminer:
     image: adminer
     ports:
-      - "69422:8080"
+      - "42062:8080"
     networks:
       - Annuraire.net
 networks:
