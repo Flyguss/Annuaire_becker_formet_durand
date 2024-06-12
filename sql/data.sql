@@ -59,9 +59,9 @@ INSERT INTO `Personne` (`Nom`, `Prenom`, `email`, `NuméroTelephone`, `NuméroTe
                                                                                                                        ('Renaud', 'Nicolas', 'nicolas.renaud@example.com', '0617171717', '0147171717', 'Chercheur', 'image18.jpg'),
                                                                                                                        ('Marchand', 'Sarah', 'sarah.marchand@example.com', '0618181818', '0148181818', 'Chef de Production', 'image19.jpg'),
                                                                                                                        ('Dufour', 'Elodie', 'elodie.dufour@example.com', '0619191919', '0149191919', 'Secrétaire', 'image20.jpg'),
-                                                                                                                       ('Becker', 'Doryann', 'crafteur55100-verdun@hotmail.com', '0783722613', '0000000000', 'CEO', 'image1.jpg'),
-                                                                                                                       ('Formet', 'Romain', 'romain.formet@gmail.com', '0677509018', '0000000000', 'sous-fifre', 'image2.jpg'),
-                                                                                                                       ('Durand', 'Quentin', 'quentindurand04@gmail.com', '0627636920', '0000000000', 'sous-fifre', 'image3.jpg');
+                                                                                                                       ('Becker', 'Doryann', 'crafteur55100-verdun@hotmail.com', '0783722613', '0000000000', 'Karatéka dangereux', 'image1.jpg'),
+                                                                                                                       ('Formet', 'Romain', 'romain.formet@gmail.com', '0677509018', '0000000000', 'Gros Bg', 'image2.jpg'),
+                                                                                                                       ('Durand', 'Quentin', 'quentindurand04@gmail.com', '0623736043', '0000000000', 'Big Boss', 'image3.jpg');
 
 INSERT INTO `Département` (`id`, `nom`, `etagePrincipale`, `description`) VALUES
                                                                               (1, 'Informatique', 3, 'Département responsable du développement des logiciels et de la gestion des systèmes informatiques.'),
