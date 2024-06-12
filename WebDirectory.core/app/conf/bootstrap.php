@@ -25,7 +25,7 @@ $twig->getEnvironment()
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, false, false);
 
-(new Eloquent)->init(__DIR__ . '/gift.db.conf.ini');
+(new Eloquent)->init(__DIR__ . '/config.ini');
 
 
 // Inclure les routes
