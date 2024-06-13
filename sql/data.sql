@@ -16,7 +16,7 @@ CREATE TABLE `AppartientAuxDepartement` (
 
 DROP TABLE IF EXISTS `Département`;
 CREATE TABLE `Département` (
-                               `id` int(11) NOT NULL,
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
                                `nom` varchar(50) NOT NULL,
                                `etagePrincipale` int(11) NOT NULL,
                                `description` text NOT NULL,
