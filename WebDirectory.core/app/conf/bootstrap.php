@@ -8,8 +8,6 @@ $app = AppFactory::create();
 
 
 
-$app->setBasePath('/WebDirectory.core/public');
-
 $twig = \Slim\Views\Twig::create(__DIR__ .'/../app/view',
     ['auto_reload' => true]);
 

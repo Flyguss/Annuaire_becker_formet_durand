@@ -7,12 +7,6 @@ use WebDirectory\app\Action\GetAcceuil;
 
 return function (\Slim\App $app) {
 
-    $app->get('/hello/{name}',
-        function(Request $rq, Response $rs, $args):Response{
-            $name = $args['name'];
-            $rs->getBody()->write("Hello, $name");
-            return $rs;
-        });
     $app->get('/', GetAcceuil::class)->setName('Acceuil');
 
     return $app;
