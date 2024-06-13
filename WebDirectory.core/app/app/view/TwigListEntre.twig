@@ -1,0 +1,18 @@
+{% extends "squelette.twig" %}
+{% block content %}
+<div class="container">
+    <h1>Liste des entrés</h1>
+    {% if entre is empty %}
+        <p>Aucune entrée trouvée.</p>
+    {% else %}
+    <ul>
+        {% for entre in entres %}
+            <li>
+                <p>{{ entres.nom }}</p>
+                <p>{{ entres.prenom }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

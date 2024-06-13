@@ -5,6 +5,7 @@ namespace WebDirectory\core\domain\entities;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use WebDirectory\app\core\domain\entites\Departement;
 
 class Personne extends Model
 {
@@ -14,9 +15,8 @@ class Personne extends Model
     public $timestamps=false ;
     public $keyType = 'string';
 
-    public function prestations(): BelongsToMany
+    public function departements(): BelongsToMany
     {
-        return $this->belongsToMany(::class, 'box2presta', 'box_id', 'presta_id')
-            ->withPivot('quantite');
+        return $this->belongsToMany(Departement::class, 'AppartientAuxDepartement', 'idPersonne', 'idDepartement');
     }
 }
