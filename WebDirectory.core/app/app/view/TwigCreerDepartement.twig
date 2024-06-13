@@ -1,0 +1,27 @@
+
+
+    {% extends "squelette.twig"  %}
+
+    {% block content %}
+        <div class="container">
+            <h1>Créer un Département</h1>
+            <form action="connexion" method="POST">
+                {% if erreur != null %}
+                    <p id="erreurConnexion">{{ erreur }}</p>
+                {% endif %}
+                <input type="hidden" name="csrf_token" value="{{ token }}">
+                <label for="name">Nom du Departement :</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="etage">Etage principale : </label>
+                <input type="number" id="etage" name="etage" required>
+
+                <label for="descp">Description : </label>
+                <input type="text" id="descp" name="descp" required>
+
+
+                <button type="submit">Créer le Département</button>
+            </form>
+        </div>
+
+    {% endblock %}

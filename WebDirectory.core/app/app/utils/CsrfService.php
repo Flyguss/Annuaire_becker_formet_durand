@@ -1,6 +1,6 @@
 <?php
 
-namespace gift\appli\app\utils;
+namespace WebDirectory\app\utils;
 
 use Exception;
 use function PHPUnit\Framework\equalTo;
