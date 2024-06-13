@@ -1,16 +1,16 @@
 <?php
 
 // Créer une nouvelle application Slim
-use gift\appli\Infrastructure\Eloquent;
+use WebDirectory\Infrastructure\Eloquent;
 use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
 
 
 
-$app->setBasePath('/gift/gift.appli/public');
+$app->setBasePath('/WebDirectory.core/public');
 
-$twig = \Slim\Views\Twig::create(__DIR__ .'\..\app\view',
+$twig = \Slim\Views\Twig::create(__DIR__ .'/../app/view',
     ['auto_reload' => true]);
 
 $app->add(

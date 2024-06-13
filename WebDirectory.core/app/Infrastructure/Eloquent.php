@@ -1,6 +1,6 @@
 <?php
 
-namespace gift\appli\Infrastructure;
+namespace WebDirectory\Infrastructure;
 
 use Illuminate\Database\Capsule\Manager as DB;
 

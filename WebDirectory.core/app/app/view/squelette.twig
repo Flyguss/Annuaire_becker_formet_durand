@@ -7,25 +7,13 @@
     <link rel="stylesheet" href="{{ base_path() }}/css/style.css">
 </head>
 <body>
-<header>GiftBox</header>
+<header>Annuaire</header>
 <nav>
-    <a href="{{ url_for('Categorie') }}">Catégorie</a>
-    <a href="{{ url_for('ListePrestation') }}">Prestation</a>
-    <a href="{{ url_for('ListeBox') }}">Liste des box</a>
-    <a href="{{ url_for('ListeCoffrets') }}">Liste des coffrets</a>
-    <a href="{{ url_for('BoxGet') }}">Coffret</a>
 
-
-    {% if session['email'] is defined %}
-        <a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a>
-    {% else %}
-        <a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a>
-        <a href="{{ url_for('Inscription') }}" id="Inscription">Inscription</a>
-    {% endif %}
 </nav>
 <section id="main">
     {% block content %} {% endblock %}
 </section>
-<footer>© 2024 GiftBox</footer>
+<footer>© 2024 Annuaire</footer>
 </body>
 </html>
