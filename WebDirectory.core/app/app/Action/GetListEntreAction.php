@@ -5,7 +5,7 @@ namespace WebDirectory\app\Action;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
-use WebDirectory\core\domain\entities\Personne;
+use WebDirectory\core\domain\entites\Personne;
 
 class GetListEntreAction extends AbstractAction
 {

@@ -1,11 +1,10 @@
 <?php
 
-namespace WebDirectory\core\domain\entities;
+namespace WebDirectory\core\domain\entites;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use WebDirectory\app\core\domain\entites\Departement;
 
 class Personne extends Model
 {
