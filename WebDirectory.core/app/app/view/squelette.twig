@@ -17,6 +17,7 @@
             {% if session['role'] == 100 %}
                 <a href="{{ url_for('Inscription') }}" id="Inscription">Ajouter un admin</a>
             {% endif %}
+            <a href="{{ url_for('CreateEntry') }}" id="CreateEntry">Créer une entrée</a>
             <a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a>
         {% else %}
             <a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a>

@@ -9,6 +9,7 @@ class Departement extends Model
 {
 
     protected $table='Département';
+
     public $timestamps=false ;
 
 
