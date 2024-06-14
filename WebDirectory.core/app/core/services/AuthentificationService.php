@@ -15,6 +15,7 @@ class AuthentificationService implements AuthentificationServiceInterface {
         $user = new User ;
         $user->email = $email ;
         $user->password = $password ;
+        $user->role = 1 ;
         $user->save() ;
     }
 
