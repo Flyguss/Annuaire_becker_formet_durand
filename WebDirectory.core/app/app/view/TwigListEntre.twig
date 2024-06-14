@@ -1,0 +1,31 @@
+{% extends "squelette.twig" %}
+{% block content %}
+    <div class="container">
+        <h1>Liste des entrées</h1>
+        {% if entres is empty %}
+            <p>Aucune entrée trouvée.</p>
+        {% else %}
+            <form method="get" action="{{ url_for('ListeEntre') }}">
+                <label for="departement">Sélectionner un département :</label>
+                <select id="departement" name="departement" onchange="this.form.submit()">
+                    <option value="">-- Sélectionner un département --</option>
+                    {% for dep in departements %}
+                        <option value="{{ dep.id }}" {% if selectedDepId == dep.id %}selected{% endif %}>{{ dep.nom }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <ul>
+                {% for entre in entres %}
+                    <li>
+                        <p>{{ entre.Nom }} {{ entre.Prenom }}</p>
+                        <p>Département(s) :
+                            {% for departement in entre.departements %}
+                                {{ departement.nom }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

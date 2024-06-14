@@ -9,6 +9,8 @@ use WebDirectory\app\Action\GetInscriptionAction;
 use WebDirectory\app\Action\PostConnexionAction;
 use WebDirectory\app\Action\PostCreerDepartementAction;
 use WebDirectory\app\Action\PostInscriptionAction;
+use WebDirectory\app\Action\GetListEntreAction;
+
 
 return function (\Slim\App $app) {
 
@@ -20,6 +22,7 @@ return function (\Slim\App $app) {
     $app->get('/deconnexion', GetDeconnexionAction::class)->setName('Deconnexion');
     $app->get('/inscription', GetInscriptionAction::class)->setName('Inscription');
     $app->post('/inscription', PostInscriptionAction::class)->setName('InscriptionPost');
+    $app->get('/list-entre', GetListEntreAction::class)->setName('ListeEntre');
 
     return $app;
 };
