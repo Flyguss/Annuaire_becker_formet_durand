@@ -8,21 +8,25 @@ class AnnuaireService implements AnnuaireServiceInterface
 
     public function getDepartments()
     {
-        $sql = "SELECT id, nom FROM Département";
-        $result = $this->conn->query($sql);
-        $departments = [];
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $departments[] = $row;
-            }
-        }
-
-        return $departments;
+        return Departement::all();
     }
 
     public function createEntry(array $data)
     {
-        // TODO: Implement createEntry() method.
+        $personne = Personne::create([
+            'Nom' => $data['nom'],
+            'Prenom' => $data['prenom'],
+            'email' => $data['email'],
+            'NuméroTelephone' => $data['telephone'],
+            'NuméroTelephoneBureau' => $data['telephoneBureau'],
+            'Fonction' => $data['fonction']
+        ]);
+
+        if ($personne) {
+            $personne->departements()->attach($data['departement']);
+            return true;
+        }
+
+        return false;
     }
 }
