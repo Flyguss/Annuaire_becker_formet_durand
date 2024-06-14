@@ -1,0 +1,21 @@
+{% extends "squelette.twig" %}
+{% block content %}
+<div class="container">
+    <h1>Connexion</h1>
+    <form action="connexion" method="POST">
+        {% if erreur != null %}
+        <p id="erreurConnexion">{{ erreur }}</p>
+        {% endif %}
+        <input type="hidden" name="csrf_token" value="{{ token }}">
+        <label for="name">Adresse Mail :</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="description">Mot de passe :</label>
+        <textarea id="password" name="password" required></textarea>
+
+
+        <button type="submit">Se connecter</button>
+    </form>
+</div>
+
+{% endblock %}
