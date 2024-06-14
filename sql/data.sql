@@ -104,9 +104,12 @@ CREATE TABLE `User` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `email` varchar(70) NOT NULL,
                         `password` varchar(70) NOT NULL,
+                        `role` int(11) NOT NULL,
                         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
+INSERT INTO `User` (`id`, `email`, `password`, `role`) VALUES
+                                                           (2,	'doryann@hotmail.com',	'$2y$10$M36GruGi0rq9gDUx5BkIiO7dWzlm/b/4HdjDzuzOxFIXW8AcsDT4K',	1),
+                                                           (3,	'SuperAdmin@admin.fr',	'$2y$10$FKXt/DTdhU9cV5pOVJ.xseyvi14oXU7T5MTXu5.Zj1zWJHgsfbdZC',	100);
 
-
--- 2024-06-14 06:31:19
+-- 2024-06-14 09:05:35

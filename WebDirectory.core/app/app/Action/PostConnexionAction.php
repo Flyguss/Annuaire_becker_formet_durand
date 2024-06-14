@@ -69,6 +69,7 @@ class PostConnexionAction extends AbstractAction
 
         // Mettre l'email en session
         $_SESSION['email'] = $email;
+        $_SESSION['role'] = $this->authentificationService->getUserByEmail($email)->role ;
 
         return $view->render($rs, $this->templateValide);
     }
