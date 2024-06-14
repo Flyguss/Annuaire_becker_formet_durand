@@ -31,6 +31,7 @@ class PostCreerDepartementAction extends AbstractAction
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws Exception
      */
     public function __invoke(Request $rq, Response $rs, array $args): Response
     {
