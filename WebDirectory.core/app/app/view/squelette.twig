@@ -11,13 +11,24 @@
 <nav>
     <ul>
         <a href="{{ url_for('CreerDepartement') }}">Créer Departement</a>
+        <a href="{{ url_for('ListeEntre') }}">Liste des entrés</a>
+
+        {% if session['email'] is defined %}
+            <a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a>
+        {% else %}
+            <a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a>
+            <a href="{{ url_for('Inscription') }}" id="Inscription">Inscription</a>
+        {% endif %}
+
+        
+
     </ul>
 
 </nav>
 <section id="main">
     {% block content %} {% endblock %}
 </section>
-<footer>© 2024 Annuaire</footer>
+<footer>© 2024 Annusuce</footer>
 </body>
 </html>
 
