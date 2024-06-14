@@ -4,6 +4,7 @@ namespace WebDirectory\app\Action;
 
 use Slim\Exception\HttpNotFoundException;
 use Slim\Views\Twig;
+use WebDirectory\app\utils\CsrfService;
 use WebDirectory\core\services\AnnuaireService;
 use WebDirectory\core\services\AnnuaireServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -28,15 +29,22 @@ class GetEntryForm
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function __invoke(Request $rq, Response $rs, array $args): Response {
+    public function __invoke(Request $rq, Response $rs, array $args): Response
+    {
         try {
             $departments = $this->annuaireService->getDepartments();
         } catch (DepartementNotFoundException $e) {
             throw new HttpNotFoundException($rq, $e->getMessage());
         }
 
+        $token = CsrfService::generate();
+        $data = [
+            'departments' => $departments,
+            'csrf_token' => $token
+        ];
+
+
         $view = Twig::fromRequest($rq);
-        $data = ['departments' => $departments];
         return $view->render($rs, $this->template, $data);
     }
 

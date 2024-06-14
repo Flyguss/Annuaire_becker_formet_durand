@@ -11,10 +11,10 @@ class AnnuaireService implements AnnuaireServiceInterface
 
     public function getDepartments()
     {
-        return Departement::all();
+        return Departement::all()->toArray();
     }
 
-    public function createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image) {
+    public function createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image ,$departementId) {
         $personne = new Personne();
         $personne->Nom = $nom;
         $personne->Prenom = $prenom;
@@ -24,5 +24,12 @@ class AnnuaireService implements AnnuaireServiceInterface
         $personne->Fonction = $fonction;
         $personne->image = $image;
         $personne->save();
+
+        $departement = Departement::find($departementId);
+        if ($departement) {
+            $personne->departements()->attach($departementId);
+        }
+
+        return $personne;
     }
 }

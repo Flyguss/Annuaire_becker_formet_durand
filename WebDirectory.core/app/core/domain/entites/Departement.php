@@ -12,8 +12,10 @@ class Departement extends Model
 
     public $timestamps=false ;
 
-
-
+    public function personnes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Personne::class, 'AppartientAuxDepartement', 'idDepartement', 'idPersonne');
+    }
 
 }
 
