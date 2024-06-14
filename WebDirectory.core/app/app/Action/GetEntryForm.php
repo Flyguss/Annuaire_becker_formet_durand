@@ -19,7 +19,7 @@ class GetEntryForm
     private AnnuaireServiceInterface $annuaireService;
 
     public function __construct() {
-        $this->template = 'create_entry.twig';
+        $this->template = 'TwigCreateEntry.twig';
         $this->annuaireService = new AnnuaireService();
     }
 

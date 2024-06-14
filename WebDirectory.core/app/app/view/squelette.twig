@@ -14,6 +14,7 @@
         <a href="{{ url_for('ListeEntre') }}">Liste des entrés</a>
 
         {% if session['email'] is defined %}
+            <a href="{{ url_for('CreateEntry') }}" id="CreateEntry">Créer une entrée</a>
             <a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a>
         {% else %}
             <a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a>

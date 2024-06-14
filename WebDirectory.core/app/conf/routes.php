@@ -24,8 +24,8 @@ return function (\Slim\App $app) {
     $app->get('/inscription', GetInscriptionAction::class)->setName('Inscription');
     $app->post('/inscription', PostInscriptionAction::class)->setName('InscriptionPost');
     $app->get('/list-entre', GetListEntreAction::class)->setName('ListeEntre');
-    $app->get('/entry/create', GetEntryForm::class)->setName('createEntryForm');
-    $app->post('/entry/create', PostEntryForm::class)->setName('processEntryForm');
+    $app->get('/entry/create', GetEntryForm::class)->setName('CreateEntry');
+    $app->post('/entry/create', PostEntryForm::class)->setName('PostCreateEntry');
 
     return $app;
 };

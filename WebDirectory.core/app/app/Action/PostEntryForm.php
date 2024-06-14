@@ -21,7 +21,15 @@ class PostEntryForm
         $data = $rq->getParsedBody();
 
         try {
-            if ($this->annuaireService->createEntry($data)) {
+            $nom = $data['Nom'] ?? '';
+            $prenom = $data['Prenom'] ?? '';
+            $email = $data['email'] ?? '';
+            $numTel = $data['NuméroTelephone'] ?? '';
+            $numTelBureau = $data['NuméroTelephoneBureau'] ?? '';
+            $fonction = $data['Fonction'] ?? '';
+            $image = $data['image'] ?? '';
+
+            if ($this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image)) {
                 $rs->getBody()->write("Nouvelle entrée créée avec succès.");
             } else {
                 $rs->getBody()->write("Erreur lors de la création de l'entrée.");

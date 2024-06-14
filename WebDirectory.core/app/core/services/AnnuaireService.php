@@ -2,6 +2,9 @@
 
 namespace WebDirectory\core\services;
 
+use WebDirectory\core\domain\entites\Departement;
+use WebDirectory\core\domain\entites\Personne;
+
 class AnnuaireService implements AnnuaireServiceInterface
 {
 
@@ -11,22 +14,15 @@ class AnnuaireService implements AnnuaireServiceInterface
         return Departement::all();
     }
 
-    public function createEntry(array $data)
-    {
-        $personne = Personne::create([
-            'Nom' => $data['nom'],
-            'Prenom' => $data['prenom'],
-            'email' => $data['email'],
-            'NuméroTelephone' => $data['telephone'],
-            'NuméroTelephoneBureau' => $data['telephoneBureau'],
-            'Fonction' => $data['fonction']
-        ]);
-
-        if ($personne) {
-            $personne->departements()->attach($data['departement']);
-            return true;
-        }
-
-        return false;
+    public function createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image) {
+        $personne = new Personne();
+        $personne->Nom = $nom;
+        $personne->Prenom = $prenom;
+        $personne->email = $email;
+        $personne->NuméroTelephone = $numTel;
+        $personne->NuméroTelephoneBureau = $numTelBureau;
+        $personne->Fonction = $fonction;
+        $personne->image = $image;
+        $personne->save();
     }
 }
