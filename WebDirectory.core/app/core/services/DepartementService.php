@@ -15,4 +15,8 @@ class DepartementService implements DepartementServiceInterface{
         $departement->save();
 
     }
+    public function getAllDepartements()
+    {
+        return Departement::all();
+    }
 }

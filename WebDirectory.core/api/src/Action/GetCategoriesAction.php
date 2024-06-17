@@ -4,12 +4,21 @@ namespace WebDirectory\api\src\Action;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use WebDirectory\api\src\core\domain\entites\Departement;
+use WebDirectory\api\src\core\services\DepartementService;
 
 
-class GetCategoriesAction {
-    public function __invoke(Request $request, Response $response, array $args): Response {
-        $departements = Departement::all();
+class GetCategoriesAction
+{
+    private $departementService;
+
+    public function __construct()
+    {
+        $this->departementService = new DepartementService();
+    }
+
+    public function __invoke(Request $request, Response $response, array $args): Response
+    {
+        $departements = $this->departementService->getAllDepartements();
 
         $data = [
             'type' => 'collection',

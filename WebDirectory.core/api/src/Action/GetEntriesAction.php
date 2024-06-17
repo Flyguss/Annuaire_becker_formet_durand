@@ -4,11 +4,21 @@ namespace WebDirectory\api\src\Action;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use WebDirectory\api\src\core\domain\entites\Personne;
+use WebDirectory\api\src\core\services\PersonneService;
 
-class GetEntriesAction extends AbstractAction {
-    public function __invoke(Request $rq, Response $rs, array $args): Response {
-        $entres = Personne::with('departements')->orderBy('nom')->get();
+
+class GetEntriesAction
+{
+    private $personneService;
+
+    public function __construct()
+    {
+        $this->personneService = new PersonneService();
+    }
+
+    public function __invoke(Request $rq, Response $rs, array $args): Response
+    {
+        $entres = $this->personneService->getAllPersonnes();
 
         $data = [
             'type' => 'collection',

@@ -5,13 +5,22 @@ namespace WebDirectory\api\src\Action;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
-use WebDirectory\api\src\core\domain\entites\Personne;
+use WebDirectory\api\src\core\services\PersonneService;
 
 
-class GetEntryDetailAction extends AbstractAction {
-    public function __invoke(Request $rq, Response $rs, array $args): Response {
+class GetEntryDetailAction
+{
+    private $personneService;
+
+    public function __construct()
+    {
+        $this->personneService = new PersonneService();
+    }
+
+    public function __invoke(Request $rq, Response $rs, array $args): Response
+    {
         $entryId = $args['id'];
-        $entre = Personne::with('departements')->find($entryId);
+        $entre = $this->personneService->getPersonneById($entryId);
 
         if (!$entre) {
             throw new HttpNotFoundException($rq, "Entrée non trouvée");
