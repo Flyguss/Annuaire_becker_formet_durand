@@ -9,12 +9,23 @@ $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
 
-// Ajouter les middlewares de routage et d'erreur
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, false, false);
 
-(new Eloquent)->init(__DIR__ . '/config.ini');
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
 
+//CORS
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+
+(new Eloquent)->init(__DIR__ . '/config.ini');
 
 // Inclure les routes
 (require_once __DIR__ . '/routes.php')($app);
