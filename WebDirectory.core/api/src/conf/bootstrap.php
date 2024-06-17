@@ -1,15 +1,15 @@
 <?php
 
 // Créer une nouvelle application Slim
-
 use Slim\Factory\AppFactory;
-use WebDirectory\app\src\Infrastructure\Eloquent;
+use WebDirectory\api\src\Infrastructure\Eloquent;
+
 
 $app = AppFactory::create();
 
 
 
-$twig = \Slim\Views\Twig::create(__DIR__ .'/../app/view',
+$twig = \Slim\Views\Twig::create(__DIR__ . '/../app/view',
     ['auto_reload' => true]);
 
 $app->add(

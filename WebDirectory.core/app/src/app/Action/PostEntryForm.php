@@ -1,0 +1,79 @@
+<?php
+namespace WebDirectory\app\src\app\Action;
+
+use Exception;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Views\Twig;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use WebDirectory\app\src\app\utils\CsrfService;
+use WebDirectory\app\src\core\services\AnnuaireService;
+use WebDirectory\app\src\core\services\AnnuaireServiceInterface;
+use WebDirectory\app\src\core\services\PersonneNotFoundException;
+
+
+class PostEntryForm extends AbstractAction
+{
+    private string $templateValide;
+    private string $templateInvalide;
+    private AnnuaireServiceInterface $annuaireService;
+
+    public function __construct()
+    {
+        $this->templateValide = 'TwigEntryCreated.twig';
+        $this->templateInvalide = 'TwigCreateEntry.twig';
+        $this->annuaireService = new AnnuaireService();
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     * @throws Exception
+     */
+    public function __invoke(Request $rq, Response $rs, array $args): Response
+    {
+        $view = Twig::fromRequest($rq);
+
+        $parsedBody = $rq->getParsedBody();
+
+        if (!isset($parsedBody['csrf_token'])) {
+            throw new Exception('CSRF token missing');
+        }
+
+        try {
+            CsrfService::check($parsedBody['csrf_token']);
+        } catch (Exception $e) {
+            throw new Exception('CSRF validation failed: ' . $e->getMessage());
+        }
+
+        $nom = htmlspecialchars($parsedBody['nom'] ?? '');
+        $prenom = htmlspecialchars($parsedBody['prenom'] ?? '');
+        $email = htmlspecialchars($parsedBody['email'] ?? '');
+        $numTel = htmlspecialchars($parsedBody['telephone'] ?? '');
+        $numTelBureau = htmlspecialchars($parsedBody['telephoneBureau'] ?? '');
+        $fonction = htmlspecialchars($parsedBody['fonction'] ?? '');
+        $image = htmlspecialchars($parsedBody['image'] ?? '');
+        $departementId = htmlspecialchars($parsedBody['departement'] ?? '');
+
+        // Valider les données
+        if ($nom == null || $prenom == null || $email == null || $numTel == null || $fonction == null) {
+            $token = CsrfService::generate();
+            $data = [
+                'erreur' => "Veuillez remplir tous les champs obligatoires.",
+                'csrf_token' => $token
+            ];
+            return $view->render($rs, $this->templateInvalide, $data);
+        }
+
+        // Créer l'entrée dans l'annuaire
+        try {
+            $this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId);
+            return $view->render($rs, $this->templateValide, ['nom' => $nom]);
+        } catch (PersonneNotFoundException $e) {
+            throw new Exception("Erreur lors de la création de l'entrée : " . $e->getMessage());
+        }
+    }
+}

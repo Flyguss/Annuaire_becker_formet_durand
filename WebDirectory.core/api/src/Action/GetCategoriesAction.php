@@ -7,7 +7,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use WebDirectory\api\src\core\domain\entites\Departement;
 
 
-class GetCategoriesAction {
+
+class GetCategoriesAction extends AbstractAction{
     public function __invoke(Request $request, Response $response, array $args): Response {
         $departements = Departement::all();
 

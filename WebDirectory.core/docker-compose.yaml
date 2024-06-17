@@ -1,0 +1,63 @@
+services:
+  httpd:
+    image: nginx
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "42060:80"
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+
+  web:
+    image: canals/php
+    ports:
+      - "42063:80"
+    volumes:
+      - ./WebDirectory/app/public:/var/www/html
+      - ./WebDirectory/app/src:/var/www/src
+    working_dir: /var/www/src
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+    depends_on:
+      - sql
+
+  api:
+    image: canals/php:latest
+    ports:
+      - "42064:80"
+    volumes:
+      - ./WebDirectory/api/public:/var/www/html
+      - ./WebDirectory/api/src:/var/www/src
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+    depends_on:
+      - sql
+
+  sql:
+    image: mariadb:latest
+    container_name: sql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "42061:3307"
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+
+  adminer:
+    image: adminer
+    ports:
+      - "42062:8080"
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+
+networks:
+  Annuaire.net:
+    driver: bridge
