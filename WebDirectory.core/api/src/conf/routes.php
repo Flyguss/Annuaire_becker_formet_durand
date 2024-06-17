@@ -13,8 +13,13 @@ return function (\Slim\App $app) {
     $app->get('/api/services', GetCategoriesAction::class);
     $app->get('/api/entrees', GetEntriesAction::class);
     $app->get('/api/services/{id}/entrees', GetEntriesByServiceAction::class);
-    $app->get('/api/entrees/{id}', GetEntryDetailAction::class);
     $app->get('/api/entrees/search', SearchEntriesAction::class);
+    $app->get('/api/entrees/{id}', GetEntryDetailAction::class);
+    $app->get('/test', function ($request, $response, $args) {
+        $response->getBody()->write("Hello, this is a test!");
+        return $response;
+    });
+
 
     return $app;
 };

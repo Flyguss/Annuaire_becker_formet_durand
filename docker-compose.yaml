@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   httpd:
     image: nginx:latest
@@ -21,6 +23,19 @@ services:
     depends_on:
       - sql
 
+  api:
+    image: canals/php:latest
+    ports:
+      - "42064:80"
+    volumes:
+      - ./WebDirectory.core/api/public:/var/www/html
+      - ./WebDirectory.core/api/src:/var/www/src
+    restart: unless-stopped
+    networks:
+      - Annuaire.net
+    depends_on:
+      - sql
+
   sql:
     image: mariadb:latest
     container_name: sql
@@ -30,7 +45,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "42061:3307"
+      - "42061:3306"  # Le port MariaDB par défaut est 3306
     networks:
       - Annuaire.net
 
@@ -39,7 +54,8 @@ services:
     ports:
       - "42062:8080"
     networks:
-      - Annuaire.net  # Corrigé le nom du réseau ici
+      - Annuaire.net
+
 networks:
   Annuaire.net:
     driver: bridge
