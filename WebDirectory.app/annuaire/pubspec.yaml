@@ -1,0 +1,25 @@
+name: annuaire
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.1  # Ajoutez cette ligne si vous ne l'avez pas encore
+  url_launcher: ^6.0.12  # Ajoutez cette ligne pour le package url_launcher
+  faker: ^2.0.3
+  dio: ^5.0.0
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

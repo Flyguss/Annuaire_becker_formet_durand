@@ -32,7 +32,8 @@ class GetEntriesAction
                     }),
                     'links' => [
                         'self' => ['href' => '/api/entrees/' . $entre->id],
-                        'email' => $entre->email
+                        'email' => $entre->email,
+                        'img' => $entre->image
                     ]
                 ];
             })
