@@ -31,7 +31,8 @@ class GetEntriesAction
                         return $dep->nom;
                     }),
                     'links' => [
-                        'self' => ['href' => '/api/entrees/' . $entre->id]
+                        'self' => ['href' => '/api/entrees/' . $entre->id],
+                        'email' => $entre->email
                     ]
                 ];
             })
