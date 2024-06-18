@@ -1,75 +1,78 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const apiBaseUrl = 'http://localhost:8080/api';
+    const entriesList = document.getElementById('entriesList');
+    const filterSelect = document.getElementById('filterSelect');
 
-    const entriesList = document.getElementById('entries-list');
-    const entryDetail = document.getElementById('entry-detail');
-    const searchInput = document.getElementById('search');
 
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.trim();
-        if (query) {
-            searchEntries(query);
-        } else {
-            fetchEntries();
-        }
-    });
-
-    async function fetchEntries() {
+    // Fonction pour charger et afficher la liste des entrées
+    async function loadEntries() {
         try {
-            const response = await fetch(`${apiBaseUrl}/entrees`);
+            const response = await fetch('http://localhost:42064/api/entrees');
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des données');
+            }
             const data = await response.json();
             displayEntries(data.entres);
+            populateFilterOptions(data.departements); // Remplir les options du menu déroulant
         } catch (error) {
-            console.error('Error fetching entries:', error);
+            console.error('Erreur:', error);
         }
     }
 
-    async function searchEntries(query) {
-        try {
-            const response = await fetch(`${apiBaseUrl}/entrees?q=${query}`);
-            const data = await response.json();
-            displayEntries(data.entres);
-        } catch (error) {
-            console.error('Error searching entries:', error);
-        }
-    }
-
-    function displayEntries(entries) {
-        entriesList.innerHTML = entries.map(entry => `
-            <div class="entry" data-id="${entry.id}">
-                <h2>${entry.nom} ${entry.prenom}</h2>
-                <p>${entry.departements.join(', ')}</p>
-            </div>
-        `).join('');
-
-        document.querySelectorAll('.entry').forEach(entryElement => {
-            entryElement.addEventListener('click', () => {
-                const entryId = entryElement.dataset.id;
-                fetchEntryDetail(entryId);
-            });
+    // Fonction pour remplir les options du menu déroulant
+    function populateFilterOptions(departments) {
+        filterSelect.innerHTML = '<option value="">Tous les services</option>';
+        departments.forEach(dep => {
+            filterSelect.innerHTML += `<option value="${dep.id}">${dep.nom}</option>`;
         });
     }
 
-    async function fetchEntryDetail(entryId) {
+    // Fonction pour filtrer et afficher les entrées par service/département sélectionné
+    async function filterEntries(departmentId) {
         try {
-            const response = await fetch(`${apiBaseUrl}/entrees/${entryId}`);
+            let url = 'http://localhost:42064/api/entrees';
+            if (departmentId) {
+                url += `?service=${departmentId}`;
+            }
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des données');
+            }
             const data = await response.json();
-            displayEntryDetail(data.entre);
+            displayEntries(data.entres);
         } catch (error) {
-            console.error('Error fetching entry detail:', error);
+            console.error('Erreur:', error);
         }
     }
 
-    function displayEntryDetail(entry) {
-        entryDetail.innerHTML = `
-        <h2>${entry.nom} ${entry.prenom}</h2>
-        <p>Departments: ${entry.departements.join(', ')}</p>
-        <div>${marked(entry.description)}</div>
-        <a href="mailto:${entry.email}">${entry.email}</a>
-    `;
-        entryDetail.classList.remove('hidden');
+    // Fonction pour afficher les entrées dans la liste
+    function displayEntries(entries) {
+        entriesList.innerHTML = ''; // Réinitialiser la liste
+        entries.forEach(entry => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>${entry.nom} ${entry.prenom}</strong> (${entry.departements.join(', ')})
+            `;
+            entriesList.appendChild(li);
+        });
     }
 
-    fetchEntries();
-});
+    // Fonction pour rechercher et afficher les entrées correspondant à un critère de recherche
+    async function searchEntries() {
+        const query = prompt('Entrez le nom à rechercher :');
+        if (!query) return;
 
+        try {
+            const response = await fetch(`http://localhost:42064/api/entrees?q=${query}`);
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des donnees');
+            }
+            const data = await response.json();
+            displayEntries(data.entres);
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+
+    // Appel initial pour charger la liste des entrées au chargement de la page
+    loadEntries();
+});
