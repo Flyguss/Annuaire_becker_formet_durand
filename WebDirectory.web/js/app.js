@@ -1,78 +1,128 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const entriesList = document.getElementById('entriesList');
-    const filterSelect = document.getElementById('filterSelect');
+// app.js
+import { fetchEntries } from './api.js';
+import { showView, displayEntries, displayEntryDetail } from './dom.js';
 
+let allEntries = [];
+let currentSortOrder = 'asc';
 
-    // Fonction pour charger et afficher la liste des entrées
-    async function loadEntries() {
-        try {
-            const response = await fetch('http://localhost:42064/api/entrees');
-            if (!response.ok) {
-                throw new Error('Erreur lors du chargement des données');
-            }
-            const data = await response.json();
-            displayEntries(data.entres);
-            populateFilterOptions(data.departements); // Remplir les options du menu déroulant
-        } catch (error) {
-            console.error('Erreur:', error);
-        }
-    }
-
-    // Fonction pour remplir les options du menu déroulant
-    function populateFilterOptions(departments) {
-        filterSelect.innerHTML = '<option value="">Tous les services</option>';
-        departments.forEach(dep => {
-            filterSelect.innerHTML += `<option value="${dep.id}">${dep.nom}</option>`;
-        });
-    }
-
-    // Fonction pour filtrer et afficher les entrées par service/département sélectionné
-    async function filterEntries(departmentId) {
-        try {
-            let url = 'http://localhost:42064/api/entrees';
-            if (departmentId) {
-                url += `?service=${departmentId}`;
-            }
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Erreur lors du chargement des données');
-            }
-            const data = await response.json();
-            displayEntries(data.entres);
-        } catch (error) {
-            console.error('Erreur:', error);
-        }
-    }
-
-    // Fonction pour afficher les entrées dans la liste
-    function displayEntries(entries) {
-        entriesList.innerHTML = ''; // Réinitialiser la liste
-        entries.forEach(entry => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <strong>${entry.nom} ${entry.prenom}</strong> (${entry.departements.join(', ')})
-            `;
-            entriesList.appendChild(li);
-        });
-    }
-
-    // Fonction pour rechercher et afficher les entrées correspondant à un critère de recherche
-    async function searchEntries() {
-        const query = prompt('Entrez le nom à rechercher :');
-        if (!query) return;
-
-        try {
-            const response = await fetch(`http://localhost:42064/api/entrees?q=${query}`);
-            if (!response.ok) {
-                throw new Error('Erreur lors du chargement des donnees');
-            }
-            const data = await response.json();
-            displayEntries(data.entres);
-        } catch (error) {
-            console.error('Erreur:', error);
-        }
-    }
-
-    // Appel initial pour charger la liste des entrées au chargement de la page
-    loadEntries();
+document.addEventListener("DOMContentLoaded", () => {
+    fetchEntries()
+        .then(entries => {
+            allEntries = entries;
+            populateDepartments(allEntries);
+            showView('department-view');
+            displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
+        })
+        .catch(error => console.error('Error fetching entries:', error));
+    setupEventListeners();
 });
+
+function setupEventListeners() {
+    document.getElementById('btn-department').addEventListener('click', () => {
+        showView('department-view');
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('btn-search').addEventListener('click', () => {
+        showView('search-view');
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('btn-combined-search').addEventListener('click', () => {
+        showView('combined-search-view');
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('department-select').addEventListener('change', () => {
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('name-search').addEventListener('input', () => {
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('combined-department-select').addEventListener('change', () => {
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('combined-name-search').addEventListener('input', () => {
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+        showView('department-view');
+        filterAndDisplayEntries();
+    });
+
+    document.getElementById('sort-order').addEventListener('change', (event) => {
+        currentSortOrder = event.target.value;
+        filterAndDisplayEntries();
+    });
+}
+
+function filterAndDisplayEntries() {
+    const currentViewId = document.querySelector('.view:not(.hidden)').id;
+    let filteredEntries = allEntries;
+
+    if (currentViewId === 'department-view') {
+        const selectedDepartment = document.getElementById('department-select').value;
+        filteredEntries = selectedDepartment ?
+            allEntries.filter(entry => entry.departements.includes(selectedDepartment)) :
+            allEntries;
+    } else if (currentViewId === 'search-view') {
+        const searchText = document.getElementById('name-search').value.toLowerCase();
+        filteredEntries = searchText ?
+            allEntries.filter(entry =>
+                entry.nom.toLowerCase().includes(searchText) ||
+                entry.prenom.toLowerCase().includes(searchText)
+            ) :
+            allEntries;
+    } else if (currentViewId === 'combined-search-view') {
+        const selectedDepartment = document.getElementById('combined-department-select').value;
+        const searchText = document.getElementById('combined-name-search').value.toLowerCase();
+        filteredEntries = allEntries.filter(entry => {
+            const matchesDepartment = selectedDepartment ? entry.departements.includes(selectedDepartment) : true;
+            const matchesName = searchText ?
+                entry.nom.toLowerCase().includes(searchText) ||
+                entry.prenom.toLowerCase().includes(searchText) : true;
+            return matchesDepartment && matchesName;
+        });
+    }
+
+    displayEntries(filteredEntries, `${currentViewId}-entries-list`, sortEntries, displayEntryDetail);
+}
+
+function populateDepartments(entrees) {
+    const departmentSelects = document.querySelectorAll('.department-select');
+    const departments = new Set();
+
+    entrees.forEach(entry => {
+        entry.departements.forEach(department => {
+            departments.add(department);
+        });
+    });
+
+    departmentSelects.forEach(select => {
+        departments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department;
+            option.textContent = department;
+            select.appendChild(option);
+        });
+    });
+}
+
+function sortEntries(entries) {
+    return entries.map((entry, index) => ({
+        ...entry,
+        originalIndex: index
+    })).sort((a, b) => {
+        const nameA = `${a.nom} ${a.prenom}`.toLowerCase();
+        const nameB = `${b.nom} ${b.prenom}`.toLowerCase();
+        if (currentSortOrder === 'asc') {
+            return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0);
+        } else {
+            return nameA > nameB ? -1 : (nameA < nameB ? 1 : 0);
+        }
+    });
+}
