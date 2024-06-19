@@ -1,5 +1,4 @@
 <?php
-
 namespace WebDirectory\api\src\core\services;
 
 use WebDirectory\api\src\core\domain\entites\Personne;
@@ -14,7 +13,7 @@ class PersonneService
     public function getPersonnesByDepartement($departementId)
     {
         return Personne::whereHas('departements', function ($query) use ($departementId) {
-            $query->where('id', $departementId);
+            $query->where('id', $departementId); // Utiliser l'ID exact
         })->orderBy('nom')->get();
     }
 
