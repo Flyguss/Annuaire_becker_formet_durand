@@ -15,66 +15,91 @@ use WebDirectory\core\services\PersonneNotFoundException;
 
 class PostEntryForm extends AbstractAction
 {
-    private string $templateValide;
-    private string $templateInvalide;
-    private AnnuaireServiceInterface $annuaireService;
+private string $templateValide;
+private string $templateInvalide;
+private AnnuaireServiceInterface $annuaireService;
 
-    public function __construct()
-    {
-        $this->templateValide = 'TwigEntryCreated.twig';
-        $this->templateInvalide = 'TwigCreateEntry.twig';
-        $this->annuaireService = new AnnuaireService();
+
+public function __construct()
+{
+$this->templateValide = 'TwigEntryCreated.twig';
+$this->templateInvalide = 'TwigCreateEntry.twig';
+$this->annuaireService = new AnnuaireService();
+}
+
+/**
+* @throws SyntaxError
+* @throws RuntimeError
+* @throws LoaderError
+* @throws Exception
+*/
+public function __invoke(Request $rq, Response $rs, array $args): Response
+{
+$view = Twig::fromRequest($rq);
+
+$parsedBody = $rq->getParsedBody();
+$uploadedFiles = $rq->getUploadedFiles();
+
+if (!isset($parsedBody['csrf_token'])) {
+throw new Exception('CSRF token missing');
+}
+
+try {
+CsrfService::check($parsedBody['csrf_token']);
+} catch (Exception $e) {
+throw new Exception('CSRF validation failed: ' . $e->getMessage());
+}
+
+$nom = htmlspecialchars($parsedBody['nom'] ?? '');
+$prenom = htmlspecialchars($parsedBody['prenom'] ?? '');
+$email = htmlspecialchars($parsedBody['email'] ?? '');
+$numTel = htmlspecialchars($parsedBody['telephone'] ?? '');
+$numTelBureau = htmlspecialchars($parsedBody['telephoneBureau'] ?? '');
+$fonction = htmlspecialchars($parsedBody['fonction'] ?? '');
+$departementId = htmlspecialchars($parsedBody['departement'] ?? '');
+$publie = isset($parsedBody['publie']) && $parsedBody['publie'] === 'true';
+
+// Valider les données
+if ($nom == null || $prenom == null || $email == null || $numTel == null || $fonction == null) {
+$token = CsrfService::generate();
+$data = [
+'erreur' => "Veuillez remplir tous les champs obligatoires.",
+'csrf_token' => $token
+];
+return $view->render($rs, $this->templateInvalide, $data);
+}
+
+// Gestion de l'image
+$image = '';
+    if (isset($uploadedFiles['image'])) {
+        $imageFile = $uploadedFiles['image'];
+        if ($imageFile->getError() === UPLOAD_ERR_OK) {
+            $imageFileName = $imageFile->getClientFilename();
+            $imageFileName = pathinfo($imageFileName, PATHINFO_FILENAME);
+            $imageFileName = $imageFileName . '_' . time() . '.' . pathinfo($imageFile->getClientFilename(), PATHINFO_EXTENSION);
+            $imageFilePath = '/var/www/html/assets/image/'. $imageFileName;
+
+            // Vérifiez que le chemin est correct
+            if (!is_writable(dirname($imageFilePath))) {
+                throw new Exception("Le répertoire cible n'est pas accessible en écriture : " . dirname($imageFilePath));
+            }
+
+            // Essayez de déplacer le fichier
+            $imageFile->moveTo($imageFilePath);
+            $image = $imageFileName;
+        } else {
+            throw new Exception("Erreur de téléchargement du fichier : " . $imageFile->getError());
+        }
     }
 
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     * @throws Exception
-     */
-    public function __invoke(Request $rq, Response $rs, array $args): Response
-    {
-        $view = Twig::fromRequest($rq);
 
-        $parsedBody = $rq->getParsedBody();
+// Créer l'entrée dans l'annuaire
+try {
+$this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId , $publie);
+return $view->render($rs, $this->templateValide, ['nom' => $nom]);
+} catch (PersonneNotFoundException $e) {
+throw new Exception("Erreur lors de la création de l'entrée : " . $e->getMessage());
+}
+}
 
-        if (!isset($parsedBody['csrf_token'])) {
-            throw new Exception('CSRF token missing');
-        }
-
-        try {
-            CsrfService::check($parsedBody['csrf_token']);
-        } catch (Exception $e) {
-            throw new Exception('CSRF validation failed: ' . $e->getMessage());
-        }
-
-        $nom = htmlspecialchars($parsedBody['nom'] ?? '');
-        $prenom = htmlspecialchars($parsedBody['prenom'] ?? '');
-        $email = htmlspecialchars($parsedBody['email'] ?? '');
-        $numTel = htmlspecialchars($parsedBody['telephone'] ?? '');
-        $numTelBureau = htmlspecialchars($parsedBody['telephoneBureau'] ?? '');
-        $fonction = htmlspecialchars($parsedBody['fonction'] ?? '');
-        $image = htmlspecialchars($parsedBody['image'] ?? '');
-        $publie = isset($parsedBody['publie']) && $parsedBody['publie'] === 'true';
-        $departementId = htmlspecialchars($parsedBody['departement'] ?? '');
-
-
-        // Valider les données
-        if ($nom == null || $prenom == null || $email == null || $numTel == null || $fonction == null) {
-            $token = CsrfService::generate();
-            $data = [
-                'erreur' => "Veuillez remplir tous les champs obligatoires.",
-                'csrf_token' => $token
-            ];
-            return $view->render($rs, $this->templateInvalide, $data);
-        }
-
-        // Créer l'entrée dans l'annuaire
-        try {
-            $this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId, $publie);
-            return $view->render($rs, $this->templateValide, ['nom' => $nom]);
-        } catch (PersonneNotFoundException $e) {
-            throw new Exception("Erreur lors de la création de l'entrée : " . $e->getMessage());
-        }
-    }
 }
