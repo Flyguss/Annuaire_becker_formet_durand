@@ -37,3 +37,4 @@ export function displayEntryDetail(entry) {
 
     showView('entry-detail');
 }
+
