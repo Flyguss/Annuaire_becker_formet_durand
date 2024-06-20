@@ -68,7 +68,6 @@ export function fetchEntryById(entryId) {
 }
 
 
-// Nouvelle fonction de recherche combinée
 export function searchEntriesByNameAndDepartment(query, departmentId) {
     return Promise.all([
         searchEntriesByName(query),

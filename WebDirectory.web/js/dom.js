@@ -1,4 +1,3 @@
-// dom.js
 import { fetchEntryById } from './api.js';
 export function showView(viewId) {
     const views = document.querySelectorAll('.view');
@@ -22,7 +21,7 @@ export function displayEntries(entries, listId, sortEntries, displayEntryDetail)
     document.querySelectorAll(`#${listId} a`).forEach((link, index) => {
         link.addEventListener('click', event => {
             event.preventDefault();
-            const entryId = sortedEntries[index].id; // Assuming each entry has an 'id' field
+            const entryId = sortedEntries[index].id;
             displayEntryDetail(entryId);
         });
     });
