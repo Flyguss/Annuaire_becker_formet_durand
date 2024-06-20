@@ -5,76 +5,57 @@ import 'package:flutter/foundation.dart';
 
 class ApiService {
   static Future<List<Person>> fetchPersonsApi() async {
-    try {
-         
+  try {
+    var response = await Dio().get("http://localhost:42064/api/entrees");
+    if (response.statusCode == 200) {
+      List<dynamic>? entries = response.data['entres'];
 
-      final response = await Dio().get(
-        "http://localhost:42064/api/entrees",);
-      if (response.statusCode == 200) {
-         List<dynamic> entries = response.data['entres'];
+      // Vérifiez que entries n'est pas null
+      if (entries == null) {
+        throw Exception("Les entrées sont nulles");
+      }
 
-        // Mapper chaque élément de 'entres' en tant qu'objet Person
-        List<Person> persons = entries.map((json) => Person.fromJson(json)).toList();
-        
-        
-        return persons;
-      } else {
-        if (kDebugMode) {
-          print(response.statusCode);
+      // Créer une liste de futures
+      List<Future<Person>> personFutures = entries.map((person) async {
+        // Vérifiez que 'links' et 'href' existent dans chaque entrée
+        if (person['links'] == null || person['links']['href'] == null) {
+          throw Exception("Lien non trouvé dans l'entrée");
         }
-        throw Exception("Can't read data from API - erreur");
-      }
-    } catch (e) {
+
+        var detailResponse = await Dio().get("http://localhost:42064${person['links']['href']}");
+        if (detailResponse.statusCode == 200) {
+          var p = detailResponse.data['entre'];
+          // Vérifiez que 'entre' n'est pas null
+          if (p == null) {
+            throw Exception("Détails de l'entrée non trouvés");
+          }
+          return Person.fromJson(p);
+        } else {
+          throw Exception('Erreur lors de la récupération des détails: ${detailResponse.statusCode}');
+        }
+      }).toList();
+
+      // Attendre que toutes les futures soient terminées
+      List<Person> persons = await Future.wait(personFutures);
+
+      return persons;
+    } else {
       if (kDebugMode) {
-        print(e);
+        print('Erreur lors de la récupération des entrées: ${response.statusCode}');
       }
-
-      throw Exception("Can't read data from API");
+      throw Exception("Impossible de lire les données de l'API - erreur");
     }
-  }
-
-
-  static Future<List<Person>> fetchPersonsFaker() async {
-    // Simulate an asynchronous request (e.g., to an API)
-    await Future.delayed(Duration(seconds: 1));
-
-    // Example of simulated data for multiple persons
-    List<Map<String, dynamic>> simulatedPersons = [
-      {
-        'nom': 'Doe',
-        'prenom': 'John',
-        'departements': ['Informatique', 'Marketing'],
-        'links': {
-          'siteWeb': 'https://example.com',
-          'github': 'https://github.com/example',
-          'twitter': 'https://twitter.com/example',
-        },
-      },
-      {
-        'nom': 'Smith',
-        'prenom': 'Jane',
-        'departements': ['Ressources humaines', 'Finance'],
-        'links': {
-          'siteWeb': 'https://smithcorp.com',
-          'linkedin': 'https://linkedin.com/janesmith',
-        },
-      },
-      // Add more simulated persons here if necessary
-    ];
-
-    // Create the list of Person objects
-    List<Person> persons = simulatedPersons.map((data) {
-      return Person(
-        nom: data['nom'],
-        prenom: data['prenom'],
-        departements: List<String>.from(data['departements']),
-        links: Map<String, dynamic>.from(data['links']),
-      );
-    }).toList();
-
-    return persons;
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+    throw Exception("Impossible de lire les données de l'API");
   }
 }
+
+}
+
+
 
 String getLocalhostAccordingToPlatform() {
   String host = "127.0.0.1";

@@ -100,6 +100,7 @@ INSERT INTO `Personne` (`id`, `Nom`, `Prenom`, `email`, `NuméroTelephone`, `Num
                                                                                                                                        (22, 'Formet', 'Romain', 'romain.formet@gmail.com', '0677509018', '0000000000', 'Gros Bg', 'romain.png', TRUE),
                                                                                                                                        (23, 'Durand', 'Quentin', 'quentindurand04@gmail.com', '0623736043', '0000000000', 'Casseur de Git', 'quentin.png', TRUE);
 
+
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
