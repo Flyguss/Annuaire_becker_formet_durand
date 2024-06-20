@@ -10,6 +10,7 @@ class Person {
     required this.departements,
     required this.links,
   });
+  
 
   factory Person.fromJson(Map<String, dynamic> json) {
     

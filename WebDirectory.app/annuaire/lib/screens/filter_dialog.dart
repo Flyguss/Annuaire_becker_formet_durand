@@ -5,6 +5,7 @@ class FilterDialog extends StatelessWidget {
   final VoidCallback onClear;
 
   const FilterDialog({Key? key, required this.onFilter, required this.onClear}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {

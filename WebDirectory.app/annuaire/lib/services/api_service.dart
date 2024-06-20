@@ -16,6 +16,7 @@ class ApiService {
         // Mapper chaque élément de 'entres' en tant qu'objet Person
         List<Person> persons = entries.map((json) => Person.fromJson(json)).toList();
         
+        
         return persons;
       } else {
         if (kDebugMode) {

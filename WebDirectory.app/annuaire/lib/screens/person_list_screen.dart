@@ -43,6 +43,7 @@ class _PersonListScreenState extends State<PersonListScreen> {
       _filteredPersons = _allPersons;
     });
   }
+  
 
   void _sortList() {
     setState(() {

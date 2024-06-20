@@ -58,6 +58,7 @@ class SearchScreen extends SearchDelegate<Person> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PersonDetailScreen(person: results[index])),
+              
             );
           },
         );

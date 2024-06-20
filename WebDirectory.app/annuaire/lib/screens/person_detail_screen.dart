@@ -35,6 +35,7 @@ class PersonDetailScreen extends StatelessWidget {
             SizedBox(height: 16),
             if (person.links.containsKey('email'))
               ElevatedButton(
+                
                 onPressed: () => _launchEmail(person.links['email']),
                 child: Text('Email: ${person.links['email']}'),
               ),
