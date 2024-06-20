@@ -4,30 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Annuaire</title>
-    <link rel="stylesheet" href="{{ base_path() }}/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <header>Annuaire</header>
 <nav>
     <ul>
-        <a href="{{ url_for('CreerDepartement') }}">Créer Departement</a>
-        <a href="{{ url_for('ListeEntre') }}">Liste des entrés</a>
-
+        <li><a href="{{ url_for('CreerDepartement') }}">Créer Departement</a></li>
+        <li><a href="{{ url_for('ListeEntre') }}">Liste des entrées</a></li>
         {% if session['email'] is defined %}
             {% if session['role'] == 100 %}
-                <a href="{{ url_for('Inscription') }}" id="Inscription">Ajouter un admin</a>
+                <li><a href="{{ url_for('Inscription') }}" id="Inscription">Ajouter un admin</a></li>
             {% endif %}
-            <a href="{{ url_for('CreateEntry') }}" id="CreateEntry">Créer une entrée</a>
-            <a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a>
+            <li><a href="{{ url_for('CreateEntry') }}" id="CreateEntry">Créer une entrée</a></li>
+            <li><a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a></li>
         {% else %}
-            <a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a>
-
+            <li><a href="{{ url_for('Connexion') }}" id="Connexion">Connexion</a></li>
         {% endif %}
-
-        
-
     </ul>
-
 </nav>
 <section id="main">
     {% block content %} {% endblock %}

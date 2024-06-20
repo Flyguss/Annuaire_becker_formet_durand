@@ -17,4 +17,13 @@ class PersonneService
     {
         return Personne::with('departements')->orderBy('nom')->get();
     }
+
+    public function togglePublication($personneId)
+    {
+        $personne = Personne::find($personneId);
+        if ($personne) {
+            $personne->publie = !$personne->publie;
+            $personne->save();
+        }
+    }
 }
