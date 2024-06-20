@@ -22,7 +22,13 @@ class GetListEntreAction extends AbstractAction
     public function __invoke(Request $rq, Response $rs, array $args): Response
     {
         $queryParams = $rq->getQueryParams();
+        $parsedBody = $rq->getParsedBody();
         $selectedDepId = $queryParams['departement'] ?? null;
+
+        if ($parsedBody && isset($parsedBody['toggle_publication_id'])) {
+            $personneId = $parsedBody['toggle_publication_id'];
+            $this->personneService->togglePublication($personneId);
+        }
 
         if ($selectedDepId) {
             $entres = $this->personneService->getPersonnesByDepartement($selectedDepId);

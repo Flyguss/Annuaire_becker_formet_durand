@@ -29,6 +29,11 @@
             <label for="image">URL de l'image:</label>
             <input type="text" id="image" name="image"><br><br>
 
+            <label for="publie">Publier:</label>
+            <input type="hidden" name="publie" value="false">
+            <input type="checkbox" id="publie" name="publie" value="true"><br><br>
+
+
             <label for="departement">Département:</label>
             <select id="departement" name="departement" required>
                 {% for department in departments %}

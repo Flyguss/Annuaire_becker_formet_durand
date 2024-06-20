@@ -23,7 +23,7 @@ return function (\Slim\App $app) {
     $app->get('/deconnexion', GetDeconnexionAction::class)->setName('Deconnexion');
     $app->get('/inscription', GetInscriptionAction::class)->setName('Inscription');
     $app->post('/inscription', PostInscriptionAction::class)->setName('InscriptionPost');
-    $app->get('/list-entre', GetListEntreAction::class)->setName('ListeEntre');
+    $app->map(['GET', 'POST'], '/liste-entre', GetListEntreAction::class)->setName('ListeEntre');
     $app->get('/entry/create', GetEntryForm::class)->setName('CreateEntry');
     $app->post('/entry/create', PostEntryForm::class)->setName('PostCreateEntry');
 

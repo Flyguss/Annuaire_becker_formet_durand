@@ -55,7 +55,9 @@ class PostEntryForm extends AbstractAction
         $numTelBureau = htmlspecialchars($parsedBody['telephoneBureau'] ?? '');
         $fonction = htmlspecialchars($parsedBody['fonction'] ?? '');
         $image = htmlspecialchars($parsedBody['image'] ?? '');
+        $publie = isset($parsedBody['publie']) && $parsedBody['publie'] === 'true';
         $departementId = htmlspecialchars($parsedBody['departement'] ?? '');
+
 
         // Valider les données
         if ($nom == null || $prenom == null || $email == null || $numTel == null || $fonction == null) {
@@ -69,7 +71,7 @@ class PostEntryForm extends AbstractAction
 
         // Créer l'entrée dans l'annuaire
         try {
-            $this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId);
+            $this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId, $publie);
             return $view->render($rs, $this->templateValide, ['nom' => $nom]);
         } catch (PersonneNotFoundException $e) {
             throw new Exception("Erreur lors de la création de l'entrée : " . $e->getMessage());
