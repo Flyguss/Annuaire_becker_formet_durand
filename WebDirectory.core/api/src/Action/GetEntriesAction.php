@@ -31,9 +31,8 @@ class GetEntriesAction
                     'departements' => $entre->departements->map(function ($dep) {
                         return $dep->nom;
                     }),
-                    'links' => [
-                        'self' => ['href' => '/api/entrees/' . $entre->id]
-                    ]
+                    'links' =>
+                        ['href' => '/api/entrees/' . $entre->id]
                 ];
             })
         ];
