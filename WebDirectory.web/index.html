@@ -70,12 +70,14 @@
 
 <script id="entry-detail-template" type="text/x-handlebars-template">
     <h2>{{nom}} {{prenom}}</h2>
-    <p>Départment: {{departements}}</p>
+    <p>Département: {{departements}}</p>
     <p>Numéro de téléphone personnel: {{NuméroTelephone}}</p>
     <p>Numéro de téléphone bureau: {{NuméroTelephoneBureau}}</p>
-    <p>Email: <a href="mailto:{{links.email}}" target="_blank">{{links.email}}</a></p>
-    <img src="{{links.img}}" alt="{{prenom}} {{nom}}">
+    <p>Email: <a href="mailto:{{email}}" target="_blank">{{email}}</a></p>
+    <img src="assets/image/{{img}}" alt="{{prenom}} {{nom}}">
 </script>
+
+
 
 </body>
 </html>

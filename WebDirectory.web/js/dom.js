@@ -1,4 +1,5 @@
 // dom.js
+import { fetchEntryById } from './api.js';
 export function showView(viewId) {
     const views = document.querySelectorAll('.view');
     views.forEach(view => view.classList.add('hidden'));
@@ -19,22 +20,27 @@ export function displayEntries(entries, listId, sortEntries, displayEntryDetail)
     listElement.innerHTML = html;
 
     document.querySelectorAll(`#${listId} a`).forEach((link, index) => {
-        link.setAttribute('data-id', sortedEntries[index].originalIndex);
         link.addEventListener('click', event => {
             event.preventDefault();
-            const index = event.target.getAttribute('data-id');
-            displayEntryDetail(entries[index]);
+            const entryId = sortedEntries[index].id; // Assuming each entry has an 'id' field
+            displayEntryDetail(entryId);
         });
     });
 }
 
-export function displayEntryDetail(entry) {
-    const templateSource = document.getElementById('entry-detail-template').innerHTML;
-    const template = Handlebars.compile(templateSource);
-    const html = template({ ...entry});
-    const detailContainer = document.getElementById('entry-detail');
-    detailContainer.innerHTML = html;
 
-    showView('entry-detail');
+export function displayEntryDetail(entryId) {
+    fetchEntryById(entryId)
+        .then(entry => {
+            const templateSource = document.getElementById('entry-detail-template').innerHTML;
+            const template = Handlebars.compile(templateSource);
+            const html = template(entry);
+            const detailContainer = document.getElementById('entry-detail');
+            detailContainer.innerHTML = html;
+
+            showView('entry-detail');
+        })
+        .catch(error => console.error('Error fetching entry by ID:', error));
 }
+
 
