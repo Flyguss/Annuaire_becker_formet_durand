@@ -5,6 +5,7 @@ services:
     image: nginx:latest
     volumes:
       - ./WebDirectory.web:/usr/share/nginx/html
+      - ./assets:/usr/share/nginx/html/assets
     ports:
       - "42060:80"
     networks:
@@ -17,6 +18,7 @@ services:
     volumes:
       - ./WebDirectory.core/public:/var/www/html
       - ./WebDirectory.core/app:/var/www/src
+      - ./assets:/var/www/html/assets
     working_dir: /var/www/src
     networks:
       - Annuaire.net
