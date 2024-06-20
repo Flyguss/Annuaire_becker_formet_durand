@@ -7,23 +7,35 @@ class PersonneService
 {
     public function getAllPersonnes()
     {
-        return Personne::with('departements')->orderBy('nom')->get();
+        return Personne::with('departements')
+            ->where('publie', true)
+            ->orderBy('nom')
+            ->get();
     }
 
     public function getPersonnesByDepartement($departementId)
     {
         return Personne::whereHas('departements', function ($query) use ($departementId) {
-            $query->where('id', $departementId); // Utiliser l'ID exact
-        })->orderBy('nom')->get();
+            $query->where('id', $departementId);
+        })->where('publie', true)->orderBy('nom')->get();
     }
+
 
     public function getPersonneById($personneId)
     {
-        return Personne::with('departements')->find($personneId);
+        return Personne::with('departements')
+            ->where('id', $personneId)
+            ->where('publie', true)->first();
     }
+
 
     public function searchPersonnes($query)
     {
-        return Personne::with('departements')->where('Nom', 'like', '%' . $query . '%')->orderBy('nom')->get();
+        return Personne::with('departements')
+            ->where('Nom', 'like', '%' . $query . '%')
+            ->where('publie', true)
+            ->orderBy('nom')
+            ->get();
     }
+
 }

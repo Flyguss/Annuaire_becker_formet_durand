@@ -1,3 +1,4 @@
+<?php
 namespace WebDirectory\app\Action;
 
 use Exception;
@@ -17,6 +18,7 @@ class PostEntryForm extends AbstractAction
 private string $templateValide;
 private string $templateInvalide;
 private AnnuaireServiceInterface $annuaireService;
+
 
 public function __construct()
 {
@@ -55,6 +57,7 @@ $numTel = htmlspecialchars($parsedBody['telephone'] ?? '');
 $numTelBureau = htmlspecialchars($parsedBody['telephoneBureau'] ?? '');
 $fonction = htmlspecialchars($parsedBody['fonction'] ?? '');
 $departementId = htmlspecialchars($parsedBody['departement'] ?? '');
+$publie = isset($parsedBody['publie']) && $parsedBody['publie'] === 'true';
 
 // Valider les données
 if ($nom == null || $prenom == null || $email == null || $numTel == null || $fonction == null) {
@@ -82,10 +85,11 @@ $image = $imageFileName;
 
 // Créer l'entrée dans l'annuaire
 try {
-$this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId);
+$this->annuaireService->createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId , $publie);
 return $view->render($rs, $this->templateValide, ['nom' => $nom]);
 } catch (PersonneNotFoundException $e) {
 throw new Exception("Erreur lors de la création de l'entrée : " . $e->getMessage());
 }
 }
+
 }

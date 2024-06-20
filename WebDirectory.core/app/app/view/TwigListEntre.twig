@@ -23,6 +23,12 @@
                                 {{ departement.nom }}{% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </p>
+                        <form action="{{ url_for('ListeEntre') }}" method="post" style="display:inline;">
+                            <input type="hidden" name="toggle_publication_id" value="{{ entre.id }}">
+                            <button type="submit" class="{{ entre.publie ? 'publie-button' : 'depublie-button' }}">
+                                {{ entre.publie ? 'Dépublier' : 'Publier' }}
+                            </button>
+                        </form>
                     </li>
                 {% endfor %}
             </ul>

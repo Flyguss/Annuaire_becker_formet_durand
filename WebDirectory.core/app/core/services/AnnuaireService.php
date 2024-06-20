@@ -14,7 +14,7 @@ class AnnuaireService implements AnnuaireServiceInterface
         return Departement::all()->toArray();
     }
 
-    public function createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image ,$departementId) {
+    public function createEntry($nom, $prenom, $email, $numTel, $numTelBureau, $fonction, $image, $departementId, $publie) {
         $personne = new Personne();
         $personne->Nom = $nom;
         $personne->Prenom = $prenom;
@@ -23,6 +23,7 @@ class AnnuaireService implements AnnuaireServiceInterface
         $personne->NuméroTelephoneBureau = $numTelBureau;
         $personne->Fonction = $fonction;
         $personne->image = $image;
+        $personne->publie = $publie;
         $personne->save();
 
         $departement = Departement::find($departementId);
