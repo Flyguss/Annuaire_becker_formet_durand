@@ -10,12 +10,12 @@
 <header>Annuaire</header>
 <nav>
     <ul>
-        <li><a href="{{ url_for('CreerDepartement') }}">Créer Departement</a></li>
         <li><a href="{{ url_for('ListeEntre') }}">Liste des entrées</a></li>
         {% if session['email'] is defined %}
             {% if session['role'] == 100 %}
                 <li><a href="{{ url_for('Inscription') }}" id="Inscription">Ajouter un admin</a></li>
             {% endif %}
+            <li><a href="{{ url_for('CreerDepartement') }}">Créer Departement</a></li>
             <li><a href="{{ url_for('CreateEntry') }}" id="CreateEntry">Créer une entrée</a></li>
             <li><a href="{{ url_for('Deconnexion') }}" id="Deconnexion">Déconnexion</a></li>
         {% else %}
