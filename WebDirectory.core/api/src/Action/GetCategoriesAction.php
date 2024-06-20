@@ -29,9 +29,10 @@ class GetCategoriesAction
                         'id' => $departement->id,
                         'nom' => $departement->nom,
                         'description' => $departement->description,
+                        'etagePrincipale' => $departement->etagePrincipale,
                     ],
                     'links' => [
-                        'self' => ['href' => "/api/services/{$departement->id}/entrées"]
+                        'self' => ['href' => "/api/services/{$departement->id}/entrees"]
                     ]
                 ];
             })

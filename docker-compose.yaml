@@ -45,7 +45,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "42061:3306"  # Le port MariaDB par défaut est 3306
+      - "42061:3306"
     networks:
       - Annuaire.net
 

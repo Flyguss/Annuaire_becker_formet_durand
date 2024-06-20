@@ -30,6 +30,9 @@ class GetEntriesAction
                     'departements' => $entre->departements->map(function ($dep) {
                         return $dep->nom;
                     }),
+                    'NuméroTelephone' => $entre->NuméroTelephone,
+                    'NuméroTelephoneBureau' => $entre->NuméroTelephoneBureau,
+                    'Fonction' => $entre->Fonction,
                     'links' => [
                         'self' => ['href' => '/api/entrees/' . $entre->id],
                         'email' => $entre->email,
