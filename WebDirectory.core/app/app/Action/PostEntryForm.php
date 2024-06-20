@@ -71,17 +71,27 @@ return $view->render($rs, $this->templateInvalide, $data);
 
 // Gestion de l'image
 $image = '';
-if (isset($uploadedFiles['image'])) {
-$imageFile = $uploadedFiles['image'];
-if ($imageFile->getError() === UPLOAD_ERR_OK) {
-$imageFileName = $imageFile->getClientFilename();
-$imageFileName = pathinfo($imageFileName, PATHINFO_FILENAME);
-$imageFileName = $imageFileName . '_' . time() . '.' . pathinfo($imageFile->getClientFilename(), PATHINFO_EXTENSION);
-$imageFilePath = __DIR__ . '/../../../assets/image/' . $imageFileName;
-$imageFile->moveTo($imageFilePath);
-$image = $imageFileName;
-}
-}
+    if (isset($uploadedFiles['image'])) {
+        $imageFile = $uploadedFiles['image'];
+        if ($imageFile->getError() === UPLOAD_ERR_OK) {
+            $imageFileName = $imageFile->getClientFilename();
+            $imageFileName = pathinfo($imageFileName, PATHINFO_FILENAME);
+            $imageFileName = $imageFileName . '_' . time() . '.' . pathinfo($imageFile->getClientFilename(), PATHINFO_EXTENSION);
+            $imageFilePath = '/var/www/html/assets/image/'. $imageFileName;
+
+            // Vérifiez que le chemin est correct
+            if (!is_writable(dirname($imageFilePath))) {
+                throw new Exception("Le répertoire cible n'est pas accessible en écriture : " . dirname($imageFilePath));
+            }
+
+            // Essayez de déplacer le fichier
+            $imageFile->moveTo($imageFilePath);
+            $image = $imageFileName;
+        } else {
+            throw new Exception("Erreur de téléchargement du fichier : " . $imageFile->getError());
+        }
+    }
+
 
 // Créer l'entrée dans l'annuaire
 try {
