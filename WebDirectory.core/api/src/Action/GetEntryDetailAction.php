@@ -34,7 +34,12 @@ class GetEntryDetailAction
                 'prenom' => $entre->Prenom,
                 'departements' => $entre->departements->map(function ($dep) {
                     return $dep->nom;
-                })
+                }),
+                'NuméroTelephone' => $entre->NuméroTelephone,
+                'NuméroTelephoneBureau' => $entre->NuméroTelephoneBureau,
+                'Fonction' => $entre->Fonction,
+                'email' => $entre->email,
+                'img' => $entre->image
             ]
         ];
 

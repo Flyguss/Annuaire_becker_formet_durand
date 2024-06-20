@@ -25,18 +25,14 @@ class GetEntriesAction
             'count' => count($entres),
             'entres' => $entres->map(function ($entre) {
                 return [
+                    'id' => $entre->id ,
                     'nom' => $entre->Nom,
                     'prenom' => $entre->Prenom,
                     'departements' => $entre->departements->map(function ($dep) {
                         return $dep->nom;
                     }),
-                    'NuméroTelephone' => $entre->NuméroTelephone,
-                    'NuméroTelephoneBureau' => $entre->NuméroTelephoneBureau,
-                    'Fonction' => $entre->Fonction,
                     'links' => [
-                        'self' => ['href' => '/api/entrees/' . $entre->id],
-                        'email' => $entre->email,
-                        'img' => $entre->image
+                        'self' => ['href' => '/api/entrees/' . $entre->id]
                     ]
                 ];
             })
