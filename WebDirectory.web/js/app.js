@@ -1,19 +1,27 @@
-// app.js
-import { fetchEntries } from './api.js';
+import {
+    fetchEntries,
+    fetchDepartments,
+    searchEntriesByName,
+} from './api.js';
 import { showView, displayEntries, displayEntryDetail } from './dom.js';
 
 let allEntries = [];
 let currentSortOrder = 'asc';
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetchEntries()
-        .then(entries => {
-            allEntries = entries;
-            populateDepartments(allEntries);
-            showView('department-view');
-            displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
+    fetchDepartments()
+        .then(departments => {
+            populateDepartments(departments);
+            fetchEntries()
+                .then(entries => {
+                    allEntries = entries;
+                    showView('department-view');
+                    displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
+                })
+                .catch(error => console.error('Error fetching entries:', error));
         })
-        .catch(error => console.error('Error fetching entries:', error));
+        .catch(error => console.error('Error fetching departments:', error));
+
     setupEventListeners();
 });
 
@@ -38,7 +46,19 @@ function setupEventListeners() {
     });
 
     document.getElementById('name-search').addEventListener('input', () => {
-        filterAndDisplayEntries();
+        const query = document.getElementById('name-search').value;
+        if (query) {
+            searchEntriesByName(query)
+                .then(entries => displayEntries(entries, 'search-view-entries-list', sortEntries, displayEntryDetail))
+                .catch(error => console.error('Error searching entries by name:', error));
+        } else {
+            fetchEntries()
+                .then(entries => {
+                    allEntries = entries;
+                    displayEntries(allEntries, 'search-view-entries-list', sortEntries, displayEntryDetail);
+                })
+                .catch(error => console.error('Error fetching entries:', error));
+        }
     });
 
     document.getElementById('combined-department-select').addEventListener('change', () => {
@@ -59,6 +79,7 @@ function setupEventListeners() {
         filterAndDisplayEntries();
     });
 }
+
 
 function filterAndDisplayEntries() {
     const currentViewId = document.querySelector('.view:not(.hidden)').id;
@@ -92,25 +113,33 @@ function filterAndDisplayEntries() {
     displayEntries(filteredEntries, `${currentViewId}-entries-list`, sortEntries, displayEntryDetail);
 }
 
-function populateDepartments(entrees) {
-    const departmentSelects = document.querySelectorAll('.department-select');
-    const departments = new Set();
 
-    entrees.forEach(entry => {
-        entry.departements.forEach(department => {
-            departments.add(department);
-        });
-    });
+function populateDepartments(departments) {
+    const departmentSelects = document.querySelectorAll('.department-select');
 
     departmentSelects.forEach(select => {
+        select.innerHTML = ''; // Vider les options actuelles
+
+        // Ajouter une option vide pour permettre la sélection de tous les départements
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = 'Select a Department';
+        select.appendChild(emptyOption);
+
         departments.forEach(department => {
             const option = document.createElement('option');
-            option.value = department;
-            option.textContent = department;
+            option.value = department.nom; // Utiliser le nom du département comme valeur
+            option.textContent = department.nom;
             select.appendChild(option);
+        });
+
+        // Ajouter un écouteur d'événement change pour chaque sélecteur après le remplissage
+        select.addEventListener('change', () => {
+            filterAndDisplayEntries();
         });
     });
 }
+
 
 function sortEntries(entries) {
     return entries.map((entry, index) => ({
