@@ -1,29 +1,19 @@
-import {
-    fetchEntries,
-    fetchDepartments,
-    searchEntriesByName,
-    searchEntriesByNameAndDepartment,
-    fetchEntriesByDepartment,
-} from './api.js';
+// app.js
+import { fetchEntries } from './api.js';
 import { showView, displayEntries, displayEntryDetail } from './dom.js';
 
 let allEntries = [];
 let currentSortOrder = 'asc';
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetchDepartments()
-        .then(departments => {
-            populateDepartments(departments);
-            fetchEntries()
-                .then(entries => {
-                    allEntries = entries;
-                    showView('department-view');
-                    displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
-                })
-                .catch(error => console.error('Error fetching entries:', error));
+    fetchEntries()
+        .then(entries => {
+            allEntries = entries;
+            populateDepartments(allEntries);
+            showView('department-view');
+            displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
         })
-        .catch(error => console.error('Error fetching departments:', error));
-
+        .catch(error => console.error('Error fetching entries:', error));
     setupEventListeners();
 });
 
@@ -48,19 +38,7 @@ function setupEventListeners() {
     });
 
     document.getElementById('name-search').addEventListener('input', () => {
-        const query = document.getElementById('name-search').value;
-        if (query) {
-            searchEntriesByName(query)
-                .then(entries => displayEntries(entries, 'search-view-entries-list', sortEntries, displayEntryDetail))
-                .catch(error => console.error('Error searching entries by name:', error));
-        } else {
-            fetchEntries()
-                .then(entries => {
-                    allEntries = entries;
-                    displayEntries(allEntries, 'search-view-entries-list', sortEntries, displayEntryDetail);
-                })
-                .catch(error => console.error('Error fetching entries:', error));
-        }
+        filterAndDisplayEntries();
     });
 
     document.getElementById('combined-department-select').addEventListener('change', () => {
@@ -88,55 +66,48 @@ function filterAndDisplayEntries() {
 
     if (currentViewId === 'department-view') {
         const selectedDepartment = document.getElementById('department-select').value;
-        if (selectedDepartment) {
-            fetchEntriesByDepartment(selectedDepartment)
-                .then(entries => displayEntries(entries, 'department-view-entries-list', sortEntries, displayEntryDetail))
-                .catch(error => console.error('Error fetching entries by department:', error));
-        } else {
-            displayEntries(allEntries, 'department-view-entries-list', sortEntries, displayEntryDetail);
-        }
+        filteredEntries = selectedDepartment ?
+            allEntries.filter(entry => entry.departements.includes(selectedDepartment)) :
+            allEntries;
     } else if (currentViewId === 'search-view') {
         const searchText = document.getElementById('name-search').value.toLowerCase();
-        if (searchText) {
-            searchEntriesByName(searchText)
-                .then(entries => displayEntries(entries, 'search-view-entries-list', sortEntries, displayEntryDetail))
-                .catch(error => console.error('Error searching entries by name:', error));
-        } else {
-            displayEntries(allEntries, 'search-view-entries-list', sortEntries, displayEntryDetail);
-        }
+        filteredEntries = searchText ?
+            allEntries.filter(entry =>
+                entry.nom.toLowerCase().includes(searchText) ||
+                entry.prenom.toLowerCase().includes(searchText)
+            ) :
+            allEntries;
     } else if (currentViewId === 'combined-search-view') {
         const selectedDepartment = document.getElementById('combined-department-select').value;
         const searchText = document.getElementById('combined-name-search').value.toLowerCase();
-        if (selectedDepartment && searchText) {
-            searchEntriesByNameAndDepartment(searchText, selectedDepartment)
-                .then(entries => displayEntries(entries, 'combined-search-view-entries-list', sortEntries, displayEntryDetail))
-                .catch(error => console.error('Error during combined search:', error));
-        } else {
-            displayEntries(allEntries, 'combined-search-view-entries-list', sortEntries, displayEntryDetail);
-        }
+        filteredEntries = allEntries.filter(entry => {
+            const matchesDepartment = selectedDepartment ? entry.departements.includes(selectedDepartment) : true;
+            const matchesName = searchText ?
+                entry.nom.toLowerCase().includes(searchText) ||
+                entry.prenom.toLowerCase().includes(searchText) : true;
+            return matchesDepartment && matchesName;
+        });
     }
+
+    displayEntries(filteredEntries, `${currentViewId}-entries-list`, sortEntries, displayEntryDetail);
 }
 
-function populateDepartments(departments) {
+function populateDepartments(entrees) {
     const departmentSelects = document.querySelectorAll('.department-select');
+    const departments = new Set();
+
+    entrees.forEach(entry => {
+        entry.departements.forEach(department => {
+            departments.add(department);
+        });
+    });
 
     departmentSelects.forEach(select => {
-        select.innerHTML = '';
-
-        const emptyOption = document.createElement('option');
-        emptyOption.value = '';
-        emptyOption.textContent = 'Select a Department';
-        select.appendChild(emptyOption);
-
         departments.forEach(department => {
             const option = document.createElement('option');
-            option.value = department.nom;
-            option.textContent = department.nom;
+            option.value = department;
+            option.textContent = department;
             select.appendChild(option);
-        });
-
-        select.addEventListener('change', () => {
-            filterAndDisplayEntries();
         });
     });
 }
